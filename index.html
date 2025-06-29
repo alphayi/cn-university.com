@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="免费在线记忆力测试游戏 - 挑战你的短期记忆能力，锻炼大脑，提高记忆技巧！">
+    <meta name="keywords" content="Memory Test, 记忆力测试, 记忆游戏, 大脑训练, 认知能力, 记忆技巧">
+    <title>Memory Test - 免费在线记忆力测试游戏 | CN-University</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent), #ec4899);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.25rem;
+            color: var(--dark);
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-accent {
+            background: var(--gradient-accent);
+        }
+        
+        /* Header Styles */
+        header {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+            z-index: 0;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .hero-text {
+            flex: 1;
+        }
+        
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--gray);
+        }
+        
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        /* Game Embed Section */
+        .game-section {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px;
+        }
+        
+        .section-header h2 {
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2:after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .game-frame {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: linear-gradient(to bottom, #f0f9ff, white);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon i {
+            font-size: 30px;
+            color: white;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        /* How to Play */
+        .how-to-play {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            border-radius: 15px;
+            background: var(--light);
+            position: relative;
+            padding-left: 90px;
+        }
+        
+        .step-number {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* Scoring Section */
+        .scoring {
+            padding: 100px 0;
+            background: linear-gradient(to bottom, #f0f9ff, white);
+        }
+        
+        .scoring-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .scoring-text {
+            flex: 1;
+        }
+        
+        .scoring-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .scoring-image img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .score-table th, .score-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .score-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .score-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .score-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        /* FAQ Section */
+        .faq {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .faq-question {
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-answer {
+            padding: 20px;
+            background: white;
+            display: none;
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 100px 0;
+            background: var(--gradient-primary);
+            text-align: center;
+            color: white;
+        }
+        
+        .cta h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .cta h2:after {
+            background: white;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .cta p {
+            max-width: 700px;
+            margin: 0 auto 30px;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .cta .btn {
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: background 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero-content {
+                flex-direction: column;
+            }
+            
+            .scoring-content {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .game-frame {
+                height: 500px;
+            }
+            
+            .stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .game-frame {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-brain"></i>
+                    MemoryTest
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#game">开始游戏</a></li>
+                    <li><a href="#features">游戏特点</a></li>
+                    <li><a href="#how-to-play">游戏规则</a></li>
+                    <li><a href="#scoring">计分方式</a></li>
+                    <li><a href="#faq">常见问题</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>挑战你的记忆力极限</h1>
+                    <p>通过科学的记忆力测试游戏，锻炼大脑，提升认知能力，增强短期记忆技巧。免费在线游戏，随时挑战自己！</p>
+                    <a href="#game" class="btn">立即开始测试</a>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">20</div>
+                            <div class="stat-label">挑战关卡</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">1050</div>
+                            <div class="stat-label">满分分数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5秒</div>
+                            <div class="stat-label">记忆时间</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=2068" alt="记忆测试游戏界面">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Embed Section -->
+    <section id="game" class="game-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>记忆力测试游戏</h2>
+                <p>在下方嵌入的游戏界面中挑战你的记忆力，20个难度递增的关卡等你来征服！</p>
+            </div>
+            
+            <div class="game-container">
+                <iframe src="https://www.cn-university.com/game.html" class="game-frame" title="记忆力测试游戏"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>游戏特点</h2>
+                <p>我们的记忆力测试游戏经过科学设计，旨在有效提升您的记忆能力</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>渐进式难度</h3>
+                    <p>从1位数开始，逐步增加到20位数字，适应不同记忆水平，让大脑逐步适应挑战。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <h3>时间压力训练</h3>
+                    <p>每关5秒记忆时间，模拟真实记忆场景，有效提升短期记忆和快速记忆能力。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>科学记忆训练</h3>
+                    <p>基于认知心理学原理设计，针对工作记忆进行专项训练，提高信息处理效率。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>成就系统</h3>
+                    <p>清晰展示20关进度，答对显示绿色，答错显示红色，直观了解自己的记忆水平。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Play -->
+    <section id="how-to-play" class="how-to-play">
+        <div class="container">
+            <div class="section-header">
+                <h2>游戏规则</h2>
+                <p>了解如何玩记忆力测试游戏，最大化提升您的记忆能力</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>开始挑战</h3>
+                    <p>点击"开始挑战"按钮进入游戏。游戏共有20个关卡，从第1关开始。</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>记忆数字</h3>
+                    <p>每关会显示一个数字序列（第1关1位数，第2关2位数...第20关20位数），您有5秒钟时间记忆。</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>输入答案</h3>
+                    <p>倒计时结束后，在输入框中准确输入您记住的数字序列。</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>查看结果</h3>
+                    <p>提交答案后，系统会立即显示是否正确，并自动进入下一关。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scoring Section -->
+    <section id="scoring" class="scoring">
+        <div class="container">
+            <div class="section-header">
+                <h2>计分方式</h2>
+                <p>我们的评分系统科学评估您的记忆能力，提供明确的能力指标</p>
+            </div>
+            
+            <div class="scoring-content">
+                <div class="scoring-text">
+                    <h3>分数计算方式</h3>
+                    <p>记忆力测试游戏采用累进式计分系统，每关得分根据关卡难度递增：</p>
+                    
+                    <table class="score-table">
+                        <tr>
+                            <th>关卡</th>
+                            <th>数字长度</th>
+                            <th>每关得分</th>
+                        </tr>
+                        <tr>
+                            <td>第1关</td>
+                            <td>1位数字</td>
+                            <td>5分</td>
+                        </tr>
+                        <tr>
+                            <td>第2关</td>
+                            <td>2位数字</td>
+                            <td>10分</td>
+                        </tr>
+                        <tr>
+                            <td>第3关</td>
+                            <td>3位数字</td>
+                            <td>15分</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>第20关</td>
+                            <td>20位数字</td>
+                            <td>100分</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><strong>总分</strong></td>
+                            <td><strong>1050分</strong></td>
+                        </tr>
+                    </table>
+                    
+                    <h3>能力评估标准</h3>
+                    <p>完成20关挑战后，系统会根据您的总分评估记忆能力：</p>
+                    <ul style="list-style: none; margin: 20px 0; padding-left: 20px;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--success); margin-right: 10px;"></i> <strong>840分以上：</strong> 优秀 - 您拥有出色的短期记忆能力</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--warning); margin-right: 10px;"></i> <strong>600-839分：</strong> 良好 - 您的记忆力高于平均水平</li>
+                        <li><i class="fas fa-arrow-up" style="color: var(--primary); margin-right: 10px;"></i> <strong>600分以下：</strong> 继续努力 - 通过持续练习可以提升记忆能力</li>
+                    </ul>
+                </div>
+                <div class="scoring-image">
+                    <img src="https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?q=80&w=1974" alt="记忆测试计分系统">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>常见问题</h2>
+                <p>关于记忆力测试游戏的常见问题解答</p>
+            </div>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>这个记忆力测试游戏适合哪些人群？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>记忆力测试游戏适合所有希望提升记忆能力的人群，特别适合：学生、备考人员、职场人士、老年人预防认知衰退，以及对记忆技巧感兴趣的个人。游戏难度从简单到困难渐进，适合不同水平的玩家。</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>每天练习多久效果最好？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>科学研究表明，每天15-20分钟的记忆训练效果最佳。建议每天完成1-2次完整的20关挑战。持续练习4-6周后，您会发现短期记忆能力有明显提升。</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>为什么我的分数没有提高？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>记忆能力的提升需要时间和持续练习。如果分数没有明显提高，建议：</p>
+                        <ul style="margin: 15px 0 15px 30px;">
+                            <li>尝试记忆技巧（如分块记忆、联想记忆）</li>
+                            <li>在安静环境中练习，减少干扰</li>
+                            <li>保持规律练习，每周至少4-5天</li>
+                            <li>保证充足睡眠，这对记忆巩固很重要</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>游戏结果会被保存吗？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>目前游戏不会自动保存您的进度和分数。每次开始游戏都是全新的挑战。如果您想跟踪自己的进步，建议手动记录每次的分数和通过的关卡数。</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>这个游戏真的能提高记忆力吗？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>是的，基于认知心理学研究，短期记忆可以通过针对性训练得到提升。我们的游戏设计参考了工作记忆训练的科学原理，通过逐步增加记忆负荷和施加时间压力，有效锻炼大脑的记忆区域。许多用户反馈，在坚持练习数周后，不仅在游戏中表现更好，日常生活中的记忆能力也有所提高。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>准备好挑战你的记忆力了吗？</h2>
+            <p>立即开始免费的记忆力测试，了解您的记忆水平，通过科学训练提升认知能力！</p>
+            <a href="#game" class="btn">开始记忆测试</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>MemoryTest</h3>
+                    <p>提供科学有效的记忆力训练工具，帮助您提升认知能力，增强大脑功能。</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="#game">开始游戏</a></li>
+                        <li><a href="#features">游戏特点</a></li>
+                        <li><a href="#how-to-play">游戏规则</a></li>
+                        <li><a href="#scoring">计分方式</a></li>
+                        <li><a href="#faq">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>记忆资源</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">记忆技巧指南</a></li>
+                        <li><a href="#">科学记忆方法</a></li>
+                        <li><a href="#">大脑健康建议</a></li>
+                        <li><a href="#">认知训练研究</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>联系我们</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> contact@cn-university.com</li>
+                        <li><i class="fas fa-phone"></i> +86 123 4567 8910</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 北京市海淀区学院路</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 CN-University 记忆力测试项目. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ 交互功能
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                faqItem.classList.toggle('active');
+                
+                // 更新图标
+                const icon = question.querySelector('i');
+                if (faqItem.classList.contains('active')) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                } else {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            });
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
