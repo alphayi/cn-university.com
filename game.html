@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记忆力锻炼小游戏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .game-container {
+            width: 95%;
+            max-width: 800px;
+            background: rgba(15, 25, 55, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #4a9fc9;
+        }
+        
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74, 159, 201, 0.2) 0%, transparent 70%);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 标题样式 */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 进度条样式 */
+        .progress-container {
+            margin: 30px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(74, 159, 201, 0.5);
+        }
+        
+        .progress-title {
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            color: #4facfe;
+        }
+        
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .level-box {
+            height: 30px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .level-box.active {
+            background: rgba(74, 159, 201, 0.5);
+            box-shadow: 0 0 10px rgba(74, 159, 201, 0.7);
+            transform: scale(1.1);
+        }
+        
+        .level-box.passed {
+            background: rgba(46, 204, 113, 0.7);
+        }
+        
+        .level-box.failed {
+            background: rgba(231, 76, 60, 0.7);
+        }
+        
+        /* 游戏内容区域 */
+        .game-content {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 0;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid rgba(74, 159, 201, 0.3);
+        }
+        
+        /* 初始屏幕样式 */
+        .intro-screen h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #4facfe;
+        }
+        
+        .rules {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .rules ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .rules li {
+            margin: 12px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 1.05rem;
+        }
+        
+        .rules li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4facfe;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            padding: 14px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* 游戏进行中样式 */
+        .game-screen {
+            display: none;
+            width: 100%;
+        }
+        
+        .level-display {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #4facfe;
+        }
+        
+        .number-display {
+            font-size: 4rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            margin: 30px 0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px 40px;
+            border-radius: 15px;
+            min-width: 80%;
+        }
+        
+        .timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #ff9f43;
+        }
+        
+        .input-container {
+            margin: 30px 0;
+            display: none;
+            width: 80%;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            border-radius: 10px;
+            border: 2px solid #4facfe;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #00f2fe;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+        }
+        
+        /* 结果屏幕样式 */
+        .result-screen {
+            display: none;
+        }
+        
+        .score-display {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 30px 0;
+            background: linear-gradient(to right, #ff9f43, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .performance {
+            font-size: 2.2rem;
+            margin: 20px 0;
+            color: #4facfe;
+        }
+        
+        .excellent {
+            color: #2ecc71;
+            text-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
+        }
+        
+        .summary {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+            max-width: 500px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-container {
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .number-display {
+                font-size: 2.5rem;
+                padding: 15px;
+            }
+            
+            .progress-grid {
+                gap: 5px;
+            }
+            
+            .level-box {
+                height: 25px;
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .number-display {
+                font-size: 1.8rem;
+            }
+            
+            .timer {
+                font-size: 2rem;
+            }
+            
+            .score-display {
+                font-size: 3.5rem;
+            }
+            
+            .performance {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1><i class="fas fa-brain"></i> 记忆力大挑战</h1>
+            <p>测试你的短期记忆能力！</p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-title">关卡进度</div>
+            <div class="progress-grid" id="progressGrid">
+                <!-- 进度格子由JS生成 -->
+            </div>
+        </div>
+        
+        <div class="game-content">
+            <!-- 初始介绍屏幕 -->
+            <div class="intro-screen" id="introScreen">
+                <h2>游戏规则</h2>
+                <div class="rules">
+                    <ul>
+                        <li>游戏共有<strong>20个关卡</strong>，难度逐渐增加</li>
+                        <li>每个关卡会显示一个<strong>数字序列</strong>（第1关1位数，第2关2位数...第20关20位数）</li>
+                        <li>你有<strong>5秒钟</strong>的时间记忆数字</li>
+                        <li>倒计时结束后，输入你记住的数字</li>
+                        <li>每关得分：第n关得分为<strong>5×n</strong>分（第1关5分，第20关100分）</li>
+                        <li>总分1050分，840分以上为<strong>优秀</strong></li>
+                    </ul>
+                </div>
+                <button class="btn" id="startBtn">开始挑战 <i class="fas fa-play"></i></button>
+            </div>
+            
+            <!-- 游戏进行中屏幕 -->
+            <div class="game-screen" id="gameScreen">
+                <div class="level-display">第 <span id="currentLevel">1</span> 关 / 20</div>
+                <div class="number-display" id="numberDisplay"></div>
+                <div class="timer" id="timer">5</div>
+                <div class="input-container" id="inputContainer">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="请输入你记住的数字..." autocomplete="off">
+                    <button class="btn" id="submitBtn">提交答案</button>
+                </div>
+            </div>
+            
+            <!-- 结果屏幕 -->
+            <div class="result-screen" id="resultScreen">
+                <h2>挑战结束！</h2>
+                <div class="score-display" id="finalScore">0</div>
+                <div class="performance" id="performanceText"></div>
+                <div class="summary">
+                    <p><i class="fas fa-check-circle"></i> 答对关卡: <span id="correctCount">0</span></p>
+                    <p><i class="fas fa-times-circle"></i> 答错关卡: <span id="wrongCount">0</span></p>
+                    <p><i class="fas fa-trophy"></i> 最高连对: <span id="maxStreak">0</span></p>
+                </div>
+                <button class="btn" id="restartBtn">再玩一次 <i class="fas fa-redo"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 游戏状态变量
+        let currentLevel = 0;
+        let score = 0;
+        let timer;
+        let timeLeft;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let currentStreak = 0;
+        let maxStreak = 0;
+        
+        // DOM元素
+        const introScreen = document.getElementById('introScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const numberDisplay = document.getElementById('numberDisplay');
+        const timerDisplay = document.getElementById('timer');
+        const answerInput = document.getElementById('answerInput');
+        const inputContainer = document.getElementById('inputContainer');
+        const currentLevelDisplay = document.getElementById('currentLevel');
+        const progressGrid = document.getElementById('progressGrid');
+        const finalScore = document.getElementById('finalScore');
+        const performanceText = document.getElementById('performanceText');
+        const correctCountDisplay = document.getElementById('correctCount');
+        const wrongCountDisplay = document.getElementById('wrongCount');
+        const maxStreakDisplay = document.getElementById('maxStreak');
+        
+        // 初始化游戏
+        function initGame() {
+            // 创建关卡进度格子
+            for (let i = 1; i <= 20; i++) {
+                const levelBox = document.createElement('div');
+                levelBox.className = 'level-box';
+                levelBox.id = `level-${i}`;
+                levelBox.textContent = i;
+                progressGrid.appendChild(levelBox);
+            }
+            
+            // 事件监听
+            startBtn.addEventListener('click', startGame);
+            restartBtn.addEventListener('click', resetGame);
+            submitBtn.addEventListener('click', checkAnswer);
+            answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+        
+        // 重置游戏
+        function resetGame() {
+            currentLevel = 0;
+            score = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            currentStreak = 0;
+            maxStreak = 0;
+            
+            // 重置所有进度格子
+            const levelBoxes = document.querySelectorAll('.level-box');
+            levelBoxes.forEach(box => {
+                box.className = 'level-box';
+            });
+            
+            // 重置显示
+            resultScreen.style.display = 'none';
+            gameScreen.style.display = 'none';
+            introScreen.style.display = 'block';
+        }
+        
+        // 开始游戏
+        function startGame() {
+            introScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            nextLevel();
+        }
+        
+        // 进入下一关
+        function nextLevel() {
+            currentLevel++;
+            if (currentLevel > 20) {
+                endGame();
+                return;
+            }
+            
+            // 更新显示
+            currentLevelDisplay.textContent = currentLevel;
+            
+            // 激活当前关卡格子
+            document.querySelectorAll('.level-box').forEach(box => {
+                box.classList.remove('active');
+            });
+            document.getElementById(`level-${currentLevel}`).classList.add('active');
+            
+            // 生成随机数字
+            const digits = currentLevel;
+            let number = '';
+            
+            // 确保第一位不是0
+            number += Math.floor(Math.random() * 9) + 1;
+            
+            for (let i = 1; i < digits; i++) {
+                number += Math.floor(Math.random() * 10);
+            }
+            
+            numberDisplay.textContent = number;
+            timerDisplay.textContent = '5';
+            inputContainer.style.display = 'none';
+            answerInput.value = '';
+            
+            // 开始倒计时
+            timeLeft = 5;
+            timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    numberDisplay.textContent = '???';
+                    inputContainer.style.display = 'block';
+                    answerInput.focus();
+                }
+            }, 1000);
+        }
+        
+        // 检查答案
+        function checkAnswer() {
+            const userAnswer = answerInput.value.trim();
+            const correctAnswer = numberDisplay.dataset.original;
+            
+            clearInterval(timer);
+            
+            const levelBox = document.getElementById(`level-${currentLevel}`);
+            
+            if (userAnswer === correctAnswer) {
+                // 答对
+                levelBox.classList.add('passed');
+                score += currentLevel * 5;
+                correctCount++;
+                currentStreak++;
+                if (currentStreak > maxStreak) maxStreak = currentStreak;
+            } else {
+                // 答错
+                levelBox.classList.add('failed');
+                wrongCount++;
+                currentStreak = 0;
+            }
+            
+            // 短暂延迟后进入下一关
+            setTimeout(nextLevel, 1000);
+        }
+        
+        // 游戏结束
+        function endGame() {
+            gameScreen.style.display = 'none';
+            resultScreen.style.display = 'block';
+            
+            finalScore.textContent = score;
+            correctCountDisplay.textContent = correctCount;
+            wrongCountDisplay.textContent = wrongCount;
+            maxStreakDisplay.textContent = maxStreak;
+            
+            if (score >= 840) {
+                performanceText.textContent = '太棒了！你的记忆力非常优秀！';
+                performanceText.className = 'performance excellent';
+            } else if (score >= 600) {
+                performanceText.textContent = '不错！你的记忆力高于平均水平';
+                performanceText.className = 'performance';
+            } else {
+                performanceText.textContent = '继续练习，记忆力会越来越好的！';
+                performanceText.className = 'performance';
+            }
+        }
+        
+        // 初始化游戏
+        window.onload = initGame;
+    </script>
+</body>
+</html>
